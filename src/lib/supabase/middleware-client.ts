@@ -30,8 +30,9 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isAuthRoute = pathname.startsWith('/login')
   const isCourseRoute = pathname.startsWith('/course')
+  const isAdminRoute = pathname.startsWith('/admin')
 
-  if (!user && isCourseRoute) {
+  if (!user && (isCourseRoute || isAdminRoute)) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
