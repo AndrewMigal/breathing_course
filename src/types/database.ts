@@ -84,6 +84,52 @@ export interface Database {
           completed_at?: string | null
         }
       }
+      courses: {
+        Row: {
+          id: string
+          title: string
+          description: string
+          price: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description?: string
+          price?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string
+          price?: number
+          created_at?: string
+        }
+      }
+      purchases: {
+        Row: {
+          id: string
+          user_id: string
+          course_id: string
+          status: 'active' | 'pending' | 'refunded'
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          course_id: string
+          status?: 'active' | 'pending' | 'refunded'
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          course_id?: string
+          status?: 'active' | 'pending' | 'refunded'
+          created_at?: string
+        }
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>
@@ -94,6 +140,8 @@ export interface Database {
 export type Lesson = Database['public']['Tables']['lessons']['Row']
 export type UserProgress = Database['public']['Tables']['user_progress']['Row']
 export type Profile = Database['public']['Tables']['profiles']['Row']
+export type Course = Database['public']['Tables']['courses']['Row']
+export type Purchase = Database['public']['Tables']['purchases']['Row']
 
 export interface LessonWithProgress extends Lesson {
   is_completed: boolean

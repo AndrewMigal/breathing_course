@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { BREATHWORK_COURSE_ID } from '@/lib/constants'
 import CourseLayout from '@/components/course/CourseLayout'
+import PaywallBlock from '@/components/course/PaywallBlock'
 
 export default async function CoursePage() {
   const supabase = await createClient()
@@ -8,7 +10,20 @@ export default async function CoursePage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Fetch lessons ordered by module then order_index
+  // ── Access check (server-side, cannot be bypassed) ──────────────────────
+  const { data: purchase } = await supabase
+    .from('purchases')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('course_id', BREATHWORK_COURSE_ID)
+    .eq('status', 'active')
+    .maybeSingle()
+
+  if (!purchase) {
+    return <PaywallBlock />
+  }
+
+  // ── Fetch course data ────────────────────────────────────────────────────
   const { data: lessons, error: lessonsError } = await supabase
     .from('lessons')
     .select('*')
@@ -17,7 +32,6 @@ export default async function CoursePage() {
 
   if (lessonsError) throw new Error(lessonsError.message)
 
-  // Fetch this user's progress
   const { data: progressRows } = await supabase
     .from('user_progress')
     .select('lesson_id, is_completed')
@@ -34,7 +48,6 @@ export default async function CoursePage() {
     is_completed: completedSet.has(lesson.id),
   }))
 
-  // Fetch profile for display name
   const { data: profile } = await supabase
     .from('profiles')
     .select('display_name')
