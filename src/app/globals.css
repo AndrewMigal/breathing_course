@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Brand CSS Variables ─────────────────────────────────── */
+:root {
+  --bg:       #F5F0E8;
+  --bg-md:    #EDE6D6;
+  --bg-dk:    #DCC9A8;
+  --hdr:      #2C2416;
+  --hdr-2:    #3D2E1E;
+  --text:     #2C2416;
+  --text-2:   #59442D;
+  --text-3:   #A88150;
+  --accent:   #7B6144;
+  --accent-d: #59442D;
+  --border:   #DCC9A8;
+  --sky:      #8FA8C8;
+  --sky-m:    #6B8DB5;
+  --sky-d:    #375680;
+  --sky-t:    rgba(143,168,200,.15);
+  --sky-b:    rgba(143,168,200,.35);
+  --acc-t:    rgba(123,97,68,.12);
+  --acc-h:    rgba(123,97,68,.07);
+}
+
+[data-theme="dark"] {
+  --bg:       #181410;
+  --bg-md:    #201B16;
+  --bg-dk:    #2E271F;
+  --hdr:      #100D0A;
+  --hdr-2:    #1C1612;
+  --text:     #F0E8D6;
+  --text-2:   #C4A47A;
+  --text-3:   #8A7260;
+  --accent:   #C4A47A;
+  --accent-d: #A88150;
+  --border:   #3A3028;
+  --sky:      #8FA8C8;
+  --sky-m:    #8FA8C8;
+  --sky-d:    #A4BFE0;
+  --sky-t:    rgba(143,168,200,.1);
+  --sky-b:    rgba(143,168,200,.25);
+  --acc-t:    rgba(196,164,122,.12);
+  --acc-h:    rgba(196,164,122,.07);
+}
+
+/* ── Base ────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-md);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
+}
+
+/* ── Utilities ───────────────────────────────────────────── */
+.progress-bar {
+  transition: width 0.4s ease;
+}
+
+.lesson-fade {
+  animation: lessonFadeIn 0.25s ease;
+}
+
+@keyframes lessonFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.logo-hero-fade {
+  transition: opacity 0.22s ease;
+}
