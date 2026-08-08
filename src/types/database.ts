@@ -13,16 +13,19 @@ export interface Database {
         Row: {
           id: string
           display_name: string | null
+          role: 'student' | 'admin'
           created_at: string
         }
         Insert: {
           id: string
           display_name?: string | null
+          role?: 'student' | 'admin'
           created_at?: string
         }
         Update: {
           id?: string
           display_name?: string | null
+          role?: 'student' | 'admin'
           created_at?: string
         }
       }
