@@ -11,16 +11,26 @@ export default async function CoursePage() {
   if (!user) redirect('/login')
 
   // ── Access check (server-side, cannot be bypassed) ──────────────────────
-  const { data: purchase } = await supabase
-    .from('purchases')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('course_id', BREATHWORK_COURSE_ID)
-    .eq('status', 'active')
-    .maybeSingle()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('display_name, role')
+    .eq('id', user.id)
+    .single()
 
-  if (!purchase) {
-    return <PaywallBlock />
+  const isAdmin = profile?.role === 'admin'
+
+  if (!isAdmin) {
+    const { data: purchase } = await supabase
+      .from('purchases')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('course_id', BREATHWORK_COURSE_ID)
+      .eq('status', 'active')
+      .maybeSingle()
+
+    if (!purchase) {
+      return <PaywallBlock />
+    }
   }
 
   // ── Fetch course data ────────────────────────────────────────────────────
@@ -47,12 +57,6 @@ export default async function CoursePage() {
     ...lesson,
     is_completed: completedSet.has(lesson.id),
   }))
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('display_name')
-    .eq('id', user.id)
-    .single()
 
   return (
     <CourseLayout

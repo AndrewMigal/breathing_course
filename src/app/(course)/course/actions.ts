@@ -11,15 +11,25 @@ export async function markLessonComplete(lessonId: string, completed: boolean) {
   if (!user) throw new Error('Not authenticated')
 
   // Server-side access guard — cannot be bypassed from the frontend
-  const { data: purchase } = await supabase
-    .from('purchases')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('course_id', BREATHWORK_COURSE_ID)
-    .eq('status', 'active')
-    .maybeSingle()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
 
-  if (!purchase) throw new Error('No active purchase')
+  const isAdmin = profile?.role === 'admin'
+
+  if (!isAdmin) {
+    const { data: purchase } = await supabase
+      .from('purchases')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('course_id', BREATHWORK_COURSE_ID)
+      .eq('status', 'active')
+      .maybeSingle()
+
+    if (!purchase) throw new Error('No active purchase')
+  }
 
   const { error } = await supabase
     .from('user_progress')
