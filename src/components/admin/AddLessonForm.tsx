@@ -43,6 +43,17 @@ export default function AddLessonForm({ modules }: { modules: Module[] }) {
       setForm((f) => ({ ...f, [key]: e.target.value }))
   }
 
+  function setYoutubeId(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value.trim()
+    // Accept full URL or short URL and extract the ID
+    const match =
+      val.match(/[?&]v=([a-zA-Z0-9_-]{11})/) ||
+      val.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/) ||
+      val.match(/embed\/([a-zA-Z0-9_-]{11})/)
+    const id = match ? match[1] : val
+    setForm((f) => ({ ...f, youtube_id: id }))
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -159,15 +170,15 @@ export default function AddLessonForm({ modules }: { modules: Module[] }) {
       {/* YouTube ID */}
       <div>
         <label className="block text-xs font-medium mb-1.5" style={labelStyle}>
-          YouTube Video ID
+          YouTube URL or Video ID
           <span className="ml-1 font-normal" style={{ color: 'var(--text-3)' }}>
-            (the part after ?v= in the URL)
+            (paste full link or just the ID)
           </span>
         </label>
         <input
-          type="text" value={form.youtube_id} onChange={set('youtube_id')}
-          placeholder="e.g. dQw4w9WgXcQ"
-          className="w-full px-3 py-2.5 rounded-lg text-sm outline-none font-mono"
+          type="text" value={form.youtube_id} onChange={setYoutubeId}
+          placeholder="https://www.youtube.com/watch?v=... or dQw4w9WgXcQ"
+          className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
           style={inputStyle} required
         />
         {form.youtube_id.length > 5 && (
