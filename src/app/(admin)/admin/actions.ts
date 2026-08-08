@@ -42,6 +42,43 @@ export async function revokeAccess(userId: string) {
   revalidatePath('/admin')
 }
 
+export async function createUser(formData: {
+  email: string
+  password: string
+  display_name: string
+  role: 'student' | 'admin'
+  grant_access: boolean
+}) {
+  await verifyAdmin()
+  const admin = createAdminClient()
+
+  // Create auth user (email_confirm skips the confirmation email)
+  const { data: created, error: createError } = await admin.auth.admin.createUser({
+    email: formData.email,
+    password: formData.password,
+    user_metadata: { display_name: formData.display_name },
+    email_confirm: true,
+  })
+  if (createError) throw new Error(createError.message)
+
+  const userId = created.user.id
+
+  // Set role if admin (trigger sets 'student' by default)
+  if (formData.role === 'admin') {
+    await admin.from('profiles').update({ role: 'admin' }).eq('id', userId)
+  }
+
+  // Grant course access if requested
+  if (formData.grant_access) {
+    await admin.from('purchases').upsert(
+      { user_id: userId, course_id: BREATHWORK_COURSE_ID, status: 'active' },
+      { onConflict: 'user_id,course_id' }
+    )
+  }
+
+  revalidatePath('/admin')
+}
+
 export async function addLesson(formData: {
   module_id: number
   module_name: string

@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { BREATHWORK_COURSE_ID } from '@/lib/constants'
 import UsersTable, { type UserRow } from '@/components/admin/UsersTable'
+import AddUserForm from '@/components/admin/AddUserForm'
 import AddLessonForm from '@/components/admin/AddLessonForm'
 import Link from 'next/link'
 
@@ -113,6 +114,22 @@ export default async function AdminPage() {
             style={{ border: '1px solid var(--border)', background: 'var(--bg-md)' }}
           >
             <UsersTable users={users} />
+          </div>
+        </section>
+
+        {/* Add user */}
+        <section>
+          <h2 className="text-lg font-semibold mb-1" style={{ color: 'var(--text)' }}>
+            Add User
+          </h2>
+          <p className="text-sm mb-5" style={{ color: 'var(--text-3)' }}>
+            Creates an account directly — no email confirmation required.
+          </p>
+          <div
+            className="rounded-2xl p-6"
+            style={{ border: '1px solid var(--border)', background: 'var(--bg-md)' }}
+          >
+            <AddUserForm />
           </div>
         </section>
 
