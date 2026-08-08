@@ -29,7 +29,7 @@ export default async function CoursePage() {
       .maybeSingle()
 
     if (!purchase) {
-      return <PaywallBlock />
+      return <PaywallBlock userEmail={user.email ?? ''} />
     }
   }
 
