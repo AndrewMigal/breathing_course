@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inhale Exhale Co. — Breathwork Mastery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { serif: ['Georgia', '"Times New Roman"', 'serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* ── LIGHT THEME (default) ── */
+    :root {
+      --bg:       #F5F0E8;
+      --bg-md:    #EDE6D6;
+      --bg-dk:    #DCC9A8;
+      --hdr:      #2C2416;
+      --hdr-2:    #3D2E1E;
+      --text:     #2C2416;
+      --text-2:   #59442D;
+      --text-3:   #A88150;
+      --muted:    #C4A47A;
+      --accent:   #7B6144;
+      --accent-d: #59442D;
+      --border:   #DCC9A8;
+      --sky:      #8FA8C8;
+      --sky-m:    #6B8DB5;
+      --sky-d:    #375680;
+      --sky-t:    rgba(143,168,200,.15);
+      --sky-b:    rgba(143,168,200,.35);
+      --acc-t:    rgba(123,97,68,.12);
+      --acc-h:    rgba(123,97,68,.07);
+    }
+
+    /* ── DARK THEME ── */
+    [data-theme=dark] {
+      --bg:       #181410;
+      --bg-md:    #201B16;
+      --bg-dk:    #2E271F;
+      --hdr:      #100D0A;
+      --hdr-2:    #1C1612;
+      --text:     #F0E8D6;
+      --text-2:   #C4A47A;
+      --text-3:   #8A7260;
+      --muted:    #6B5840;
+      --accent:   #C4A47A;
+      --accent-d: #A88150;
+      --border:   #3A3028;
+      --sky:      #8FA8C8;
+      --sky-m:    #8FA8C8;
+      --sky-d:    #A4BFE0;
+      --sky-t:    rgba(143,168,200,.1);
+      --sky-b:    rgba(143,168,200,.25);
+      --acc-t:    rgba(196,164,122,.12);
+      --acc-h:    rgba(196,164,122,.07);
+    }
+
+    body { background: var(--bg); color: var(--text); transition: background .3s, color .3s; }
+
+    /* ── scrollbar ── */
+    ::-webkit-scrollbar          { width: 5px; }
+    ::-webkit-scrollbar-track    { background: var(--bg-md); }
+    ::-webkit-scrollbar-thumb    { background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    .bar-fill { transition: width .65s cubic-bezier(.4,0,.2,1); }
+
+    /* ── video ── */
+    .video-wrap {
+      position: relative; padding-bottom: 56.25%; height: 0;
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    }
+    .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    /* ── tabs ── */
+    .tab-link {
+      position: relative; padding-bottom: 14px; transition: color .2s;
+    }
+    .tab-link::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      height: 2px; width: 0; background: var(--accent);
+      border-radius: 2px; transition: width .3s ease;
+    }
+    .tab-link.active { color: var(--accent) !important; }
+    .tab-link.active::after { width: 100%; }
+
+    /* ── accordion ── */
+    .accordion-body { overflow: hidden; transition: max-height .35s ease, opacity .3s ease; }
+
+    /* ── lesson rows ── */
+    .lesson-btn { transition: background .18s, border-color .18s; }
+    .lesson-btn:hover { background: var(--acc-h); }
+    .lesson-btn.is-active { background: var(--acc-t); border-left: 3px solid var(--accent) !important; }
+
+    /* ── fade animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp .28s ease forwards; }
+
+    /* ── mobile sidebar ── */
+    @media (max-width: 1023px) {
+      #sidebar {
+        position: fixed; top: 0; left: -340px;
+        height: 100dvh; width: 320px; z-index: 60;
+        transition: left .32s cubic-bezier(.4,0,.2,1); overflow-y: auto;
+      }
+      #sidebar.open { left: 0; }
+      #scrim {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,.5); backdrop-filter: blur(3px); z-index: 55;
+      }
+      #scrim.open { display: block; }
+    }
+
+    /* ── complete btn pop ── */
+    @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+    .pop { animation: pop .22s ease; }
+
+    /* ── theme toggle ── */
+    #theme-toggle { transition: transform .3s ease; }
+    #theme-toggle:hover { transform: rotate(20deg); }
+
+    /* ── card / input transitions ── */
+    .card { transition: background .3s, border-color .3s; }
+    textarea { transition: background .3s, border-color .2s, color .3s; }
+
+    /* ── sidebar logo hero ── */
+    .logo-hero-img {
+      width: 100%; display: block;
+      height: 210px; object-fit: contain; object-position: center;
+      transition: opacity .4s ease;
+    }
+    .logo-hero-fade { opacity: 0; }
+    .stars { color: #C4A47A; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+<div id="scrim" onclick="closeSidebar()"></div>
+
+<!-- ══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
+<header class="sticky top-0 z-50 shadow-lg transition-colors duration-300" style="background:var(--hdr);">
+  <div class="max-w-[1600px] mx-auto px-4 h-16 flex items-center gap-3">
+
+    <!-- hamburger -->
+    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-white/10 transition flex-shrink-0" style="color:var(--bg);">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+
+    <!-- logo -->
+    <a href="#" class="flex items-center gap-2.5 flex-shrink-0">
+      <svg width="38" height="38" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="47" fill="#F5F0E8" stroke="#8FA8C8" stroke-width="2"/>
+        <path d="M50 3 A47 47 0 0 1 50 97 A23.5 23.5 0 0 1 50 50 A23.5 23.5 0 0 0 50 3" fill="#7B6144"/>
+        <circle cx="50" cy="26.5" r="11.5" fill="#7B6144"/>
+        <circle cx="50" cy="73.5" r="11.5" fill="#F5F0E8"/>
+        <g stroke="#F5F0E8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="50" y1="34" x2="50" y2="46"/>
+          <path d="M50 40 C44 40 40 45 39 52 C38 58 40 63 42 65"/>
+          <path d="M50 40 C56 40 60 45 61 52 C62 58 60 63 58 65"/>
+          <path d="M42 44 C36 44 33 50 33 57 C33 64 37 68 42 69"/>
+          <path d="M58 44 C64 44 67 50 67 57 C67 64 63 68 58 69"/>
+          <path d="M42 69 C44 72 46 73 50 73"/>
+          <path d="M58 69 C56 72 54 73 50 73"/>
+        </g>
+        <g stroke="#F5F0E8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M43 25 C41 23 41 20 44 19 C45 17 48 17 50 19 C52 17 55 17 56 19 C59 20 59 23 57 25 C58 27 57 30 55 31 C53 32 51 32 50 31 C49 32 47 32 45 31 C43 30 42 27 43 25"/>
+          <line x1="50" y1="19" x2="50" y2="31"/>
+          <path d="M46 21 C44 22 44 25 45 26"/>
+          <path d="M46 27 C44 28 44 30 45 31"/>
+          <path d="M54 21 C56 22 56 25 55 26"/>
+          <path d="M54 27 C56 28 56 30 55 31"/>
+        </g>
+      </svg>
+      <div>
+        <div class="text-sm font-bold tracking-[.12em] uppercase leading-tight font-serif" style="color:#F5F0E8;">Inhale Exhale Co.</div>
+        <div class="text-[9px] tracking-[.2em] uppercase" style="color:#A88150;">Academy</div>
+      </div>
+    </a>
+
+    <!-- course progress -->
+    <div class="flex-1 min-w-0 mx-4 hidden sm:block">
+      <div class="text-xs font-medium mb-1.5 truncate" style="color:#C4A47A;">
+        Breathwork Mastery: The Complete Course
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background:var(--hdr-2);">
+          <div id="hdr-bar" class="bar-fill h-full rounded-full" style="width:30%; background:linear-gradient(90deg,#8FA8C8,#6B8DB5);"></div>
+        </div>
+        <span id="hdr-txt" class="text-xs font-semibold whitespace-nowrap flex-shrink-0" style="color:#8FA8C8;">3 of 10 · 30%</span>
+      </div>
+    </div>
+
+    <!-- author -->
+    <div class="hidden md:flex items-center gap-2 flex-shrink-0">
+      <span class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold" style="background:linear-gradient(135deg,#8FA8C8,#375680);color:#fff;">IE</span>
+      <span class="text-xs" style="color:#A88150;">Inhale Exhale Co.</span>
+    </div>
+
+    <!-- theme toggle -->
+    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme"
+            class="flex-shrink-0 p-2 rounded-lg hover:bg-white/10 transition" style="color:#C4A47A;">
+      <!-- sun icon (shown in dark mode) -->
+      <svg id="icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.07-5.66-.71.71M6.34 17.66l-.71.71M17.66 17.66l-.71-.71M6.34 6.34l-.71-.71M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+      </svg>
+      <!-- moon icon (shown in light mode) -->
+      <svg id="icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+    </button>
+
+    <!-- exit -->
+    <button class="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium hover:opacity-75 transition"
+            style="background:rgba(139,97,68,.18);color:#C4A47A;border:1px solid rgba(139,97,68,.35);">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+      </svg>
+      Sign Out
+    </button>
+  </div>
+
+  <!-- mobile progress strip -->
+  <div class="sm:hidden px-4 pb-3 -mt-1">
+    <div class="flex justify-between mb-1">
+      <span class="text-[10px]" style="color:#A88150;">Course Progress</span>
+      <span id="hdr-txt-m" class="text-[10px] font-semibold" style="color:#8FA8C8;">3 of 10 · 30%</span>
+    </div>
+    <div class="h-1.5 rounded-full overflow-hidden" style="background:var(--hdr-2);">
+      <div id="hdr-bar-m" class="bar-fill h-full rounded-full" style="width:30%; background:linear-gradient(90deg,#8FA8C8,#6B8DB5);"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     BODY
+═══════════════════════════════════════ -->
+<div class="max-w-[1600px] mx-auto flex min-h-[calc(100dvh-64px)]">
+
+  <!-- ───── SIDEBAR ───── -->
+  <aside id="sidebar" class="lg:relative lg:left-0 w-80 flex-shrink-0 flex flex-col shadow-xl lg:shadow-none card"
+         style="background:var(--bg-md); border-right:1px solid var(--border);">
+
+    <!-- ── LOGO HERO ── -->
+    <div class="relative flex-shrink-0 overflow-hidden" style="border-bottom:1px solid var(--border);">
+      <!-- image -->
+      <div class="relative">
+        <img id="logo-hero" src="logo-light.jpg" alt="Inhale Exhale Co."
+             class="logo-hero-img" />
+        <!-- gradient blend into sidebar bg -->
+        <div class="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+             style="background:linear-gradient(to top, var(--bg-md) 10%, transparent);"></div>
+      </div>
+
+      <!-- text block floated over gradient -->
+      <div class="relative px-4 pb-4 -mt-10">
+        <div class="text-[10px] font-bold uppercase tracking-[.18em] font-serif mb-0.5" style="color:var(--text-3);">Complete Course</div>
+        <div class="font-bold font-serif leading-snug text-base" style="color:var(--text);">Breathwork Mastery</div>
+        <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+          <!-- stars -->
+          <div class="flex gap-px stars">
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <span class="text-xs" style="color:var(--text-3);">4.9 · 10 lessons · Inhale Exhale Co.</span>
+        </div>
+      </div>
+
+      <!-- mobile close btn -->
+      <button onclick="closeSidebar()" class="lg:hidden absolute top-3 right-3 p-1.5 rounded-full hover:opacity-70 transition"
+              style="background:rgba(0,0,0,.25); color:#F5F0E8;">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- course content label -->
+    <div class="px-4 py-2.5 border-b" style="border-color:var(--border);">
+      <span class="text-[11px] font-bold uppercase tracking-[.15em] font-serif" style="color:var(--text-3);">Course Content</span>
+    </div>
+
+    <nav id="module-list" class="flex-1 overflow-y-auto py-2"></nav>
+
+    <div class="p-4 border-t" style="border-color:var(--border);">
+      <div class="flex items-center gap-2 mb-2">
+        <svg class="w-3.5 h-3.5 flex-shrink-0" style="color:var(--sky);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span id="sb-txt" class="text-xs" style="color:var(--accent);">3 of 10 lessons completed</span>
+      </div>
+      <div class="h-2 rounded-full overflow-hidden" style="background:var(--border);">
+        <div id="sb-bar" class="bar-fill h-full rounded-full" style="width:30%; background:linear-gradient(90deg,var(--sky),var(--sky-m));"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ───── MAIN ───── -->
+  <main class="flex-1 min-w-0 p-4 lg:p-6 xl:p-8 space-y-5">
+
+    <!-- VIDEO -->
+    <div class="video-wrap" style="border:1px solid var(--border);">
+      <iframe id="player" src="" title="Lesson" allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    </div>
+
+    <!-- LESSON CONTROLS -->
+    <div class="rounded-2xl p-5 shadow-sm card" style="background:var(--bg-md); border:1px solid var(--border);">
+
+      <div class="flex flex-wrap items-start gap-3 mb-4">
+        <div class="flex-1 min-w-0">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold mb-2"
+                style="background:var(--sky-t); color:var(--sky-d); border:1px solid var(--sky-b);">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <span id="mod-name">Module 1</span>
+          </span>
+          <h1 id="lesson-title" class="text-xl font-bold leading-snug font-serif" style="color:var(--text);"></h1>
+        </div>
+        <button id="complete-btn" onclick="markComplete()"
+                class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md">
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between pt-4" style="border-top:1px solid var(--border);">
+        <button id="btn-prev" onclick="navigate(-1)"
+                class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition hover:opacity-75"
+                style="background:var(--bg); color:var(--accent); border:1px solid var(--border);">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          <span class="hidden sm:inline">Previous</span>
+        </button>
+
+        <span id="lesson-counter" class="text-xs font-medium hidden sm:block" style="color:var(--text-3);"></span>
+
+        <button id="btn-next" onclick="navigate(1)"
+                class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition hover:opacity-75 shadow-sm"
+                style="background:linear-gradient(135deg,var(--accent),var(--accent-d)); color:var(--bg);">
+          <span class="hidden sm:inline">Next</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="rounded-2xl overflow-hidden shadow-sm card" style="background:var(--bg-md); border:1px solid var(--border);">
+      <div class="flex px-5 border-b gap-6" style="background:var(--bg); border-color:var(--border);">
+        <button class="tab-link active text-sm font-medium pt-3.5" style="color:var(--accent);"
+                data-tab="desc" onclick="switchTab('desc')">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Description
+          </span>
+        </button>
+        <button class="tab-link text-sm font-medium pt-3.5" style="color:var(--text-3);"
+                data-tab="files" onclick="switchTab('files')">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+            </svg>
+            Materials
+          </span>
+        </button>
+        <button class="tab-link text-sm font-medium pt-3.5" style="color:var(--text-3);"
+                data-tab="comments" onclick="switchTab('comments')">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 3H3a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/>
+            </svg>
+            Comments
+            <span class="text-[10px] px-1.5 py-0.5 rounded-full font-bold" style="background:var(--sky);color:#fff;">3</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="p-5 lg:p-6">
+
+        <!-- DESCRIPTION -->
+        <div id="tab-desc" class="tab-body fade-up">
+          <p id="lesson-desc" class="text-sm leading-relaxed mb-5" style="color:var(--text-2);"></p>
+          <div class="rounded-xl p-4" style="background:var(--sky-t); border:1px solid var(--sky-b);">
+            <h3 class="flex items-center gap-2 text-sm font-semibold mb-3 font-serif" style="color:var(--sky-d);">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+              </svg>
+              What you'll learn in this lesson
+            </h3>
+            <ul id="lesson-obj" class="space-y-2 text-sm" style="color:var(--sky-d);"></ul>
+          </div>
+        </div>
+
+        <!-- MATERIALS -->
+        <div id="tab-files" class="tab-body hidden fade-up">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition hover:opacity-80 card"
+                 style="background:var(--bg); border:1px solid var(--border);">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--acc-t);">
+                <svg class="w-5 h-5" style="color:var(--accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium" style="color:var(--text);">Breathing Techniques Reference Chart.pdf</div>
+                <div class="text-xs mt-0.5" style="color:var(--text-3);">PDF · 2.4 MB</div>
+              </div>
+              <svg class="w-4 h-4 flex-shrink-0" style="color:var(--sky);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+            </div>
+
+            <div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition hover:opacity-80 card"
+                 style="background:var(--bg); border:1px solid var(--border);">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--sky-t);">
+                <svg class="w-5 h-5" style="color:var(--sky-m);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium" style="color:var(--text);">Practice Journal — Template.xlsx</div>
+                <div class="text-xs mt-0.5" style="color:var(--text-3);">Excel · 156 KB</div>
+              </div>
+              <svg class="w-4 h-4 flex-shrink-0" style="color:var(--sky);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+            </div>
+
+            <div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition hover:opacity-80 card"
+                 style="background:var(--bg); border:1px solid var(--border);">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--sky-t);">
+                <svg class="w-5 h-5" style="color:var(--sky-m);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium" style="color:var(--text);">Recommended Reading List</div>
+                <div class="text-xs mt-0.5" style="color:var(--text-3);">Links · 8 sources</div>
+              </div>
+              <svg class="w-4 h-4 flex-shrink-0" style="color:var(--sky);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMMENTS -->
+        <div id="tab-comments" class="tab-body hidden fade-up">
+          <div class="flex gap-3 mb-6">
+            <span class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold"
+                  style="background:linear-gradient(135deg,#8FA8C8,#375680);color:#fff;">You</span>
+            <div class="flex-1">
+              <textarea rows="2" placeholder="Ask a question or leave a comment…"
+                class="w-full rounded-xl px-3 py-2.5 text-sm resize-none focus:outline-none card"
+                style="background:var(--bg); border:1px solid var(--border); color:var(--text);"
+                onfocus="this.style.borderColor='var(--sky)'" onblur="this.style.borderColor='var(--border)'">
+              </textarea>
+              <div class="flex justify-end mt-2">
+                <button class="px-4 py-1.5 rounded-lg text-sm font-semibold transition hover:opacity-80"
+                        style="background:linear-gradient(135deg,#8FA8C8,#375680);color:#fff;">Send</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-5">
+            <div class="flex gap-3">
+              <span class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold"
+                    style="background:linear-gradient(135deg,#C4A47A,#A88150);color:#fff;">MA</span>
+              <div>
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <span class="text-sm font-semibold" style="color:var(--text);">Maria A.</span>
+                  <span class="text-xs" style="color:var(--text-3);">2 days ago</span>
+                </div>
+                <p class="text-sm" style="color:var(--text-2);">Such a useful lesson! I finally understand the difference between diaphragmatic and chest breathing. Practicing every morning now.</p>
+                <button class="text-xs mt-2 hover:opacity-70 transition" style="color:var(--sky);">Reply</button>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <span class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold"
+                    style="background:linear-gradient(135deg,#6B8DB5,#375680);color:#fff;">DK</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <span class="text-sm font-semibold" style="color:var(--text);">Daniel K.</span>
+                  <span class="text-xs" style="color:var(--text-3);">5 days ago</span>
+                </div>
+                <p class="text-sm" style="color:var(--text-2);">In box breathing, should the exhale hold be the same length as the inhale hold?</p>
+                <button class="text-xs mt-2 hover:opacity-70 transition" style="color:var(--sky);">Reply</button>
+
+                <div class="flex gap-3 mt-4 pl-4 border-l-2" style="border-color:var(--border);">
+                  <span class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold"
+                        style="background:linear-gradient(135deg,#7B6144,#59442D);color:#F5F0E8;">IE</span>
+                  <div>
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <span class="text-sm font-semibold" style="color:var(--text);">Inhale Exhale Co.</span>
+                      <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold"
+                            style="background:var(--acc-t);color:var(--accent);">Author</span>
+                      <span class="text-xs" style="color:var(--text-3);">4 days ago</span>
+                    </div>
+                    <p class="text-sm" style="color:var(--text-2);">Yes — in classic Box Breathing all four phases are equal: inhale 4s → hold 4s → exhale 4s → hold 4s. That's the "box".</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+/* ────────────────────────────────────────
+   COURSE DATA  (English)
+──────────────────────────────────────── */
+const COURSE = {
+  modules: [
+    {
+      id: 1, title: 'Foundations of Breath',
+      lessons: [
+        {
+          id: 1, title: 'Introduction to Breathwork',
+          vid: 'inpok4MKVLM',
+          desc: 'Welcome to Breathwork Mastery by Inhale Exhale Co. In this opening lesson we explore the history and philosophy of conscious breathing, its profound effects on body and mind, and map out exactly what you\'ll learn throughout the course.',
+          obj: ['Understand the core philosophy of conscious breathing', 'Trace the history of breathwork from ancient yoga to modern science', 'Familiarise yourself with the course structure', 'Set a personal intention and goal for your practice']
+        },
+        {
+          id: 2, title: 'The Anatomy of Breath',
+          vid: 'ERcHYwH9E-k',
+          desc: 'A deep dive into the anatomy of the respiratory system. We\'ll study the structure of the lungs, the role of the diaphragm — the primary breathing muscle — and understand how respiratory physiology shapes our emotional state.',
+          obj: ['Learn the structure of the human respiratory system', 'Understand the diaphragm\'s pivotal role in breathing', 'Discover how the nervous system regulates breath', 'Recognise the link between breathing and the autonomic nervous system']
+        },
+        {
+          id: 3, title: 'Nose vs. Mouth Breathing',
+          vid: 'rkZl2gsLUp4',
+          desc: 'One of the most important yet overlooked aspects of breathing is the pathway of air. Why is nasal breathing fundamentally critical for health? How does it affect brain performance, sleep quality, and even facial structure?',
+          obj: ['Understand the advantages of nasal over mouth breathing', 'Learn about the role of nitric oxide in breathing', 'Explore the consequences of chronic mouth breathing', 'Begin exercises to transition to consistent nasal breathing']
+        },
+        {
+          id: 4, title: 'The Nervous System & Breath',
+          vid: 'odADwWzHR24',
+          desc: 'Breathing is the only autonomic nervous system function under voluntary control. We\'ll break down how different breathing patterns activate the sympathetic ("fight-or-flight") or parasympathetic ("rest-and-digest") branches.',
+          obj: ['Study the structure of the autonomic nervous system', 'Understand how breathing directly influences heart rate', 'Master techniques to lower stress through the breath', 'Learn to regulate anxiety using deliberate breathing']
+        },
+      ]
+    },
+    {
+      id: 2, title: 'Core Techniques',
+      lessons: [
+        {
+          id: 5, title: 'Box Breathing',
+          vid: 'tEmt1Znux58',
+          desc: 'Box Breathing is a powerful technique used by US Navy SEALs to maintain focus under extreme pressure. The simple 4-4-4-4 formula (inhale–hold–exhale–hold) instantly reduces stress and sharpens concentration.',
+          obj: ['Master the Box Breathing pattern at a 4-4-4-4 rhythm', 'Understand the neurophysiological mechanism at work', 'Apply the technique effectively in high-stress situations', 'Build a consistent daily Box Breathing practice']
+        },
+        {
+          id: 6, title: '4-7-8 Breathing',
+          vid: 'gz4G31LGyog',
+          desc: 'The 4-7-8 technique, developed by Dr. Andrew Weil, is called a "natural tranquiliser for the nervous system." It\'s especially effective for insomnia, anxiety, and acute stress responses.',
+          obj: ['Master the 4-7-8 breathing pattern', 'Understand why an extended exhale activates the parasympathetic system', 'Use the technique as a powerful sleep aid', 'Integrate the practice into an evening wind-down routine']
+        },
+        {
+          id: 7, title: 'Diaphragmatic Breathing',
+          vid: 'kgTL5G1ibEo',
+          desc: 'Diaphragmatic — or "belly" — breathing is the foundation of all breathwork practices. Most people in the modern world have forgotten how to breathe fully. In this lesson we restore that natural ability.',
+          obj: ['Master the technique of diaphragmatic breathing', 'Understand the difference between chest and belly breathing', 'Learn to self-assess your current breathing pattern', 'Develop a daily exercise routine to reinforce the skill']
+        },
+      ]
+    },
+    {
+      id: 3, title: 'Advanced Practices',
+      lessons: [
+        {
+          id: 8, title: 'The Wim Hof Method',
+          vid: '0BNejY1e9ik',
+          desc: 'The Wim Hof Method combines specific breathing techniques, meditation, and cold exposure. Scientific studies have demonstrated that the method allows conscious influence over the immune system.',
+          obj: ['Explore the three pillars of the Wim Hof Method', 'Learn the cyclic hyperventilation breathing pattern', 'Understand the scientific evidence behind the method', 'Know the contraindications and safety precautions']
+        },
+        {
+          id: 9, title: 'Pranayama: The Essentials',
+          vid: 'q0IuQIBiAYk',
+          desc: 'Pranayama is the ancient yogic science of controlling life-force through breath. We\'ll explore Nadi Shodhana, Ujjayi, Kapalabhati, and Bhramari and examine their effects on states of consciousness.',
+          obj: ['Explore the philosophy and history of pranayama', 'Master Nadi Shodhana (alternate nostril breathing)', 'Learn both energising and calming pranayama techniques', 'Design a personal pranayama practice framework']
+        },
+        {
+          id: 10, title: 'Integration: Daily Practice',
+          vid: 'j723aoYxXKI',
+          desc: 'The final lesson is devoted to integrating everything you\'ve learned into daily life. We\'ll build a personal breathwork protocol, craft morning and evening rituals, and set you up for long-term growth.',
+          obj: ['Create a personalised breathwork protocol', 'Build sustainable morning and evening rituals', 'Apply techniques contextually throughout the day', 'Receive tools for continued independent development']
+        },
+      ]
+    },
+  ]
+};
+
+/* ────────────────────────────────────────
+   THEME
+──────────────────────────────────────── */
+const THEME_KEY = 'ie_theme_v1';
+
+function applyTheme (dark) {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('icon-sun').classList.toggle('hidden', !dark);
+  document.getElementById('icon-moon').classList.toggle('hidden', dark);
+  localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+
+  // crossfade logo image
+  const img = document.getElementById('logo-hero');
+  if (img) {
+    img.classList.add('logo-hero-fade');
+    setTimeout(() => {
+      img.src = dark ? 'logo-dark.jpg' : 'logo-light.jpg';
+      img.classList.remove('logo-hero-fade');
+    }, 220);
+  }
+}
+
+function toggleTheme () {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(!isDark);
+}
+
+// initialise from storage
+applyTheme(localStorage.getItem(THEME_KEY) === 'dark');
+
+/* ────────────────────────────────────────
+   STATE
+──────────────────────────────────────── */
+const LS_KEY = 'ie_progress_v2';
+
+function loadState () {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; }
+}
+function saveState () {
+  localStorage.setItem(LS_KEY, JSON.stringify({ done: [...state.done], cur: state.cur }));
+}
+
+const saved = loadState();
+const state = {
+  done: new Set(saved.done || [1, 2, 3]),
+  cur:  saved.cur || 4
+};
+
+/* ────────────────────────────────────────
+   HELPERS
+──────────────────────────────────────── */
+function allLessons ()    { return COURSE.modules.flatMap(m => m.lessons); }
+function lessonById (id)  { return allLessons().find(l => l.id === id); }
+function moduleOf (id)    { return COURSE.modules.find(m => m.lessons.some(l => l.id === id)); }
+function idxOf (id)       { return allLessons().findIndex(l => l.id === id); }
+
+/* ────────────────────────────────────────
+   RENDER SIDEBAR
+──────────────────────────────────────── */
+function renderSidebar () {
+  const nav = document.getElementById('module-list');
+  nav.innerHTML = '';
+
+  COURSE.modules.forEach((mod, mi) => {
+    const doneCount = mod.lessons.filter(l => state.done.has(l.id)).length;
+    const hasActive = mod.lessons.some(l => l.id === state.cur);
+    const open      = hasActive || mi === 0;
+
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `
+      <button onclick="toggleAccordion(${mod.id})"
+              class="w-full flex items-center justify-between px-4 py-3 text-left transition hover:opacity-80">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="w-6 h-6 rounded-full text-xs font-bold flex-shrink-0 flex items-center justify-center"
+                style="background:var(--sky-t);color:var(--sky-d);">${mod.id}</span>
+          <div class="min-w-0">
+            <div class="text-[10px] uppercase tracking-widest font-bold font-serif" style="color:var(--text-3);">Module ${mod.id}</div>
+            <div class="text-sm font-medium leading-tight truncate" style="color:var(--text);">${mod.title}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+          <span class="text-xs" style="color:var(--text-3);">${doneCount}/${mod.lessons.length}</span>
+          <svg id="chv-${mod.id}" class="w-4 h-4 transition-transform duration-300 ${open ? 'rotate-180' : ''}"
+               style="color:var(--text-3);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+      </button>
+      <div id="acc-${mod.id}" class="accordion-body"
+           style="max-height:${open ? '600px' : '0'}; opacity:${open ? '1' : '0'};">
+        ${mod.lessons.map(l => lessonRow(l)).join('')}
+      </div>
+    `;
+    nav.appendChild(wrap);
+
+    if (mi < COURSE.modules.length - 1) {
+      const hr = document.createElement('div');
+      hr.style.cssText = 'height:1px;background:var(--border);margin:2px 16px;';
+      nav.appendChild(hr);
+    }
+  });
+}
+
+function lessonRow (l) {
+  const active = l.id === state.cur;
+  const done   = state.done.has(l.id);
+
+  const icon = done
+    ? `<span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center" style="background:var(--sky);">
+         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24">
+           <path stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+         </svg>
+       </span>`
+    : active
+      ? `<span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center" style="background:var(--accent);">
+           <svg class="w-3 h-3" fill="#F5F0E8" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+         </span>`
+      : `<span class="w-5 h-5 rounded-full border-2 flex-shrink-0" style="border-color:var(--border);"></span>`;
+
+  return `
+    <button onclick="selectLesson(${l.id})" data-lid="${l.id}"
+            class="lesson-btn w-full flex items-center gap-3 px-4 py-2.5 text-left ${active ? 'is-active' : ''}"
+            style="border-left:3px solid ${active ? 'var(--accent)' : 'transparent'};">
+      ${icon}
+      <span class="text-sm flex-1 min-w-0 leading-snug"
+            style="color:${active ? 'var(--text)' : done ? 'var(--accent)' : 'var(--text-2)'};
+                   font-weight:${active ? '600' : '400'};">${l.title}</span>
+    </button>
+  `;
+}
+
+/* ────────────────────────────────────────
+   ACCORDION
+──────────────────────────────────────── */
+function toggleAccordion (id) {
+  const body = document.getElementById(`acc-${id}`);
+  const chv  = document.getElementById(`chv-${id}`);
+  const open = body.style.maxHeight !== '0px' && body.style.maxHeight !== '0';
+  body.style.maxHeight = open ? '0'     : '600px';
+  body.style.opacity   = open ? '0'     : '1';
+  chv.style.transform  = open ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+/* ────────────────────────────────────────
+   SELECT LESSON
+──────────────────────────────────────── */
+function selectLesson (id, autoplay = false) {
+  state.cur = id;
+  saveState();
+
+  const l   = lessonById(id);
+  const mod = moduleOf(id);
+  const all = allLessons();
+  const idx = idxOf(id);
+
+  document.getElementById('player').src =
+    `https://www.youtube.com/embed/${l.vid}?rel=0&modestbranding=1${autoplay ? '&autoplay=1' : ''}`;
+
+  document.getElementById('lesson-title').textContent   = l.title;
+  document.getElementById('mod-name').textContent       = `Module ${mod.id}: ${mod.title}`;
+  document.getElementById('lesson-counter').textContent = `Lesson ${idx + 1} of ${all.length}`;
+  document.getElementById('lesson-desc').textContent    = l.desc;
+
+  document.getElementById('lesson-obj').innerHTML = l.obj.map(o => `
+    <li class="flex items-start gap-2">
+      <svg class="w-4 h-4 mt-0.5 flex-shrink-0" style="color:var(--sky);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+      <span>${o}</span>
+    </li>`).join('');
+
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  prevBtn.disabled     = idx === 0;
+  nextBtn.disabled     = idx === all.length - 1;
+  prevBtn.style.opacity = idx === 0 ? '.4' : '1';
+  nextBtn.style.opacity = idx === all.length - 1 ? '.4' : '1';
+
+  renderCompleteBtn();
+  renderSidebar();
+  closeSidebar();
+
+  if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ────────────────────────────────────────
+   COMPLETE BUTTON
+──────────────────────────────────────── */
+function renderCompleteBtn () {
+  const btn  = document.getElementById('complete-btn');
+  const done = state.done.has(state.cur);
+
+  if (done) {
+    btn.style.cssText = 'background:linear-gradient(135deg,#8FA8C8,#375680);color:#fff;cursor:default;';
+    btn.innerHTML = `
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+      </svg>Completed!`;
+    btn.onclick = null;
+  } else {
+    btn.style.cssText = 'background:linear-gradient(135deg,#7B6144,#59442D);color:#F5F0E8;cursor:pointer;';
+    btn.innerHTML = `
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>Mark as Complete`;
+    btn.onclick = markComplete;
+  }
+}
+
+function markComplete () {
+  if (state.done.has(state.cur)) return;
+  state.done.add(state.cur);
+  saveState();
+
+  const btn = document.getElementById('complete-btn');
+  btn.classList.add('pop');
+  btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+
+  renderCompleteBtn();
+  updateProgress();
+  renderSidebar();
+}
+
+/* ────────────────────────────────────────
+   PROGRESS
+──────────────────────────────────────── */
+function updateProgress () {
+  const total = allLessons().length;
+  const done  = state.done.size;
+  const pct   = Math.round(done / total * 100);
+  const txt   = `${done} of ${total} · ${pct}%`;
+  const sb    = `${done} of ${total} lessons completed`;
+
+  ['hdr-bar','hdr-bar-m','sb-bar'].forEach(id => {
+    document.getElementById(id).style.width = `${pct}%`;
+  });
+  ['hdr-txt','hdr-txt-m'].forEach(id => {
+    document.getElementById(id).textContent = txt;
+  });
+  document.getElementById('sb-txt').textContent = sb;
+}
+
+/* ────────────────────────────────────────
+   NAVIGATION
+──────────────────────────────────────── */
+function navigate (dir) {
+  const all = allLessons();
+  const i   = idxOf(state.cur) + dir;
+  if (i >= 0 && i < all.length) selectLesson(all[i].id, true);
+}
+
+/* ────────────────────────────────────────
+   TABS
+──────────────────────────────────────── */
+function switchTab (name) {
+  document.querySelectorAll('.tab-body').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.tab-link').forEach(btn => {
+    btn.classList.remove('active');
+    btn.style.color = 'var(--text-3)';
+  });
+
+  const body = document.getElementById(`tab-${name}`);
+  body.classList.remove('hidden');
+  body.classList.remove('fade-up'); void body.offsetWidth; body.classList.add('fade-up');
+
+  const link = document.querySelector(`[data-tab="${name}"]`);
+  link.classList.add('active');
+  link.style.color = 'var(--accent)';
+}
+
+/* ────────────────────────────────────────
+   MOBILE SIDEBAR
+──────────────────────────────────────── */
+function toggleSidebar () {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('open');
+}
+function closeSidebar () {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('scrim').classList.remove('open');
+}
+
+/* ────────────────────────────────────────
+   INIT
+──────────────────────────────────────── */
+(function init () {
+  renderSidebar();
+  selectLesson(state.cur, false);
+  updateProgress();
+})();
+</script>
+</body>
+</html>
