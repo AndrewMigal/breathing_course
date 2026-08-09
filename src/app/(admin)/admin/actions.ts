@@ -17,6 +17,15 @@ async function verifyAdmin() {
   return user
 }
 
+export async function deleteUser(userId: string) {
+  await verifyAdmin()
+  const admin = createAdminClient()
+
+  const { error } = await admin.auth.admin.deleteUser(userId)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+}
+
 export async function grantAccess(userId: string) {
   await verifyAdmin()
   const admin = createAdminClient()
