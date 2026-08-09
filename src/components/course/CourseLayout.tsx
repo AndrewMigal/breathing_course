@@ -11,6 +11,7 @@ interface Props {
   lessons: LessonWithProgress[]
   userEmail: string
   displayName: string
+  isAdmin: boolean
 }
 
 // Group lessons by module
@@ -25,7 +26,7 @@ function groupByModule(lessons: LessonWithProgress[]) {
   return Array.from(map.entries()).map(([id, val]) => ({ id, ...val }))
 }
 
-export default function CourseLayout({ lessons, displayName }: Props) {
+export default function CourseLayout({ lessons, displayName, isAdmin }: Props) {
   const { theme, toggle: toggleTheme } = useTheme()
   const router = useRouter()
 
@@ -169,6 +170,17 @@ export default function CourseLayout({ lessons, displayName }: Props) {
               </svg>
             )}
           </button>
+
+          {/* Admin link */}
+          {isAdmin && (
+            <a
+              href="/admin"
+              className="text-xs px-2.5 py-1 rounded-lg transition-colors"
+              style={{ color: 'var(--sky)', border: '1px solid var(--sky-b)' }}
+            >
+              Admin
+            </a>
+          )}
 
           {/* Sign out */}
           <button

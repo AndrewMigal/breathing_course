@@ -63,6 +63,7 @@ export default async function CoursePage() {
       lessons={lessonsWithProgress}
       userEmail={user.email ?? ''}
       displayName={profile?.display_name ?? user.email ?? 'Student'}
+      isAdmin={isAdmin}
     />
   )
 }
