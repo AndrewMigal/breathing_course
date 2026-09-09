@@ -6,22 +6,19 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className="relative min-h-screen flex items-center justify-center p-4">
-      {/* Hero background */}
+    <main className="min-h-screen flex flex-col" style={{ background: '#0A1520' }}>
+      {/* Hero image at top */}
       <Image
         src="/hero-banner.png"
         alt=""
-        fill
-        className="object-cover object-center"
+        width={1920}
+        height={1080}
+        className="hidden md:block w-full h-auto"
         priority
       />
-      {/* Dark overlay */}
-      <div
-        className="absolute inset-0"
-        style={{ background: 'rgba(10,21,32,0.62)' }}
-      />
-      {/* Content */}
-      <div className="relative z-10 w-full flex items-center justify-center">
+
+      {/* Form below */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 pb-10 pt-6 md:justify-start">
         {children}
       </div>
     </main>
