@@ -51,11 +51,11 @@ export default function LoginPage() {
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
         <BrandLogo size={80} className="mb-4" />
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
-          Inhale Exhale Co.
+        <h1 className="text-2xl font-bold tracking-wide" style={{ color: 'var(--text)' }}>
+          onlybreaths
         </h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-3)' }}>
-          Breathwork Mastery Course
+        <p className="text-sm mt-1 tracking-widest font-light" style={{ color: 'var(--text-3)' }}>
+          BREATHE · MOVE · LIVE
         </p>
       </div>
 
