@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import BrandLogo from '@/components/ui/BrandLogo'
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'signup'>('login')
@@ -48,23 +47,11 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-sm">
-      {/* Logo */}
-      <div className="flex flex-col items-center mb-8">
-        <BrandLogo size={80} className="mb-4" />
-        <h1 className="text-2xl font-bold tracking-wide text-white">
-          onlybreaths
-        </h1>
-        <p className="text-sm mt-1 tracking-widest font-light" style={{ color: 'rgba(255,255,255,0.6)' }}>
-          BREATHE · MOVE · LIVE
-        </p>
-      </div>
-
       {/* Card */}
-      <div className="rounded-2xl p-8 shadow-lg"
-           style={{ background: 'var(--bg-md)', border: '1px solid var(--border)' }}>
+      <div className="rounded-2xl p-8">
         {/* Tab switcher */}
         <div className="flex rounded-xl overflow-hidden mb-6"
-             style={{ background: 'var(--bg-dk)' }}>
+             style={{ background: 'rgba(255,255,255,0.08)' }}>
           {(['login', 'signup'] as const).map((m) => (
             <button
               key={m}
@@ -72,7 +59,7 @@ export default function LoginPage() {
               className="flex-1 py-2 text-sm font-medium transition-colors"
               style={{
                 background: mode === m ? 'var(--accent)' : 'transparent',
-                color: mode === m ? 'var(--bg)' : 'var(--text-2)',
+                color: mode === m ? 'white' : 'rgba(255,255,255,0.55)',
               }}
             >
               {m === 'login' ? 'Sign In' : 'Sign Up'}
@@ -83,7 +70,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-2)' }}>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
                 Display Name
               </label>
               <input
@@ -94,16 +81,16 @@ export default function LoginPage() {
                 placeholder="Your name"
                 className="w-full px-3 py-2.5 rounded-lg text-sm outline-none transition-colors"
                 style={{
-                  background: 'var(--bg)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text)',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.18)',
+                  color: 'white',
                 }}
               />
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-2)' }}>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Email
             </label>
             <input
@@ -122,7 +109,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-2)' }}>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Password
             </label>
             <input
