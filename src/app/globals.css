@@ -2,47 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Brand CSS Variables ─────────────────────────────────── */
+/* ── Brand CSS Variables — onlybreaths ───────────────────── */
 :root {
-  --bg:       #F5F0E8;
-  --bg-md:    #EDE6D6;
-  --bg-dk:    #DCC9A8;
-  --hdr:      #2C2416;
-  --hdr-2:    #3D2E1E;
-  --text:     #2C2416;
-  --text-2:   #59442D;
-  --text-3:   #A88150;
-  --accent:   #7B6144;
-  --accent-d: #59442D;
-  --border:   #DCC9A8;
-  --sky:      #8FA8C8;
-  --sky-m:    #6B8DB5;
-  --sky-d:    #375680;
-  --sky-t:    rgba(143,168,200,.15);
-  --sky-b:    rgba(143,168,200,.35);
-  --acc-t:    rgba(123,97,68,.12);
-  --acc-h:    rgba(123,97,68,.07);
+  --bg:       #F4F8FA;
+  --bg-md:    #EBF2F6;
+  --bg-dk:    #D6E8F0;
+  --hdr:      #1A2B35;
+  --hdr-2:    #243545;
+  --text:     #1A2B35;
+  --text-2:   #3D5A6E;
+  --text-3:   #7A9BAD;
+  --accent:   #5B8FA8;
+  --accent-d: #4A7A9B;
+  --border:   #C5D8E3;
+  --sky:      #6B9DB8;
+  --sky-m:    #5B8FA8;
+  --sky-d:    #3D6A85;
+  --sky-t:    rgba(107,157,184,.15);
+  --sky-b:    rgba(107,157,184,.35);
+  --acc-t:    rgba(91,143,168,.12);
+  --acc-h:    rgba(91,143,168,.07);
 }
 
 [data-theme="dark"] {
-  --bg:       #181410;
-  --bg-md:    #201B16;
-  --bg-dk:    #2E271F;
-  --hdr:      #100D0A;
-  --hdr-2:    #1C1612;
-  --text:     #F0E8D6;
-  --text-2:   #C4A47A;
-  --text-3:   #8A7260;
-  --accent:   #C4A47A;
-  --accent-d: #A88150;
-  --border:   #3A3028;
-  --sky:      #8FA8C8;
-  --sky-m:    #8FA8C8;
-  --sky-d:    #A4BFE0;
-  --sky-t:    rgba(143,168,200,.1);
-  --sky-b:    rgba(143,168,200,.25);
-  --acc-t:    rgba(196,164,122,.12);
-  --acc-h:    rgba(196,164,122,.07);
+  --bg:       #0F1C25;
+  --bg-md:    #152535;
+  --bg-dk:    #1C3040;
+  --hdr:      #0A1520;
+  --hdr-2:    #112030;
+  --text:     #E5F0F5;
+  --text-2:   #8DBDD0;
+  --text-3:   #5A85A0;
+  --accent:   #8DBDD0;
+  --accent-d: #6B9DB8;
+  --border:   #1E3A4F;
+  --sky:      #6B9DB8;
+  --sky-m:    #8DBDD0;
+  --sky-d:    #AACFE0;
+  --sky-t:    rgba(107,157,184,.1);
+  --sky-b:    rgba(107,157,184,.25);
+  --acc-t:    rgba(141,189,208,.12);
+  --acc-h:    rgba(141,189,208,.07);
 }
 
 /* ── Base ────────────────────────────────────────────────── */

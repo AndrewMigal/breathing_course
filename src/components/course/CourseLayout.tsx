@@ -103,7 +103,7 @@ export default function CourseLayout({ lessons, displayName, isAdmin }: Props) {
     router.refresh()
   }
 
-  const logoSrc = theme === 'dark' ? '/logo-dark.jpg' : '/logo-light.jpg'
+  const logoSrc = '/logo.png'
 
   return (
     <div className="flex flex-col h-screen overflow-hidden" style={{ background: 'var(--bg)' }}>
@@ -124,10 +124,12 @@ export default function CourseLayout({ lessons, displayName, isAdmin }: Props) {
         </button>
 
         {/* Brand */}
-        <div className="flex items-center gap-2 flex-1">
-          <Image src={logoSrc} alt="Logo" width={28} height={28} className="rounded-full object-cover" />
-          <span className="font-semibold text-sm hidden sm:block" style={{ color: '#F0E8D6' }}>
-            Inhale Exhale Co.
+        <div className="flex items-center gap-2.5 flex-1">
+          <div className="w-7 h-7 rounded-full bg-white flex-shrink-0 flex items-center justify-center overflow-hidden">
+            <Image src={logoSrc} alt="onlybreaths" width={28} height={28} className="object-contain" />
+          </div>
+          <span className="font-semibold text-sm hidden sm:block tracking-wide" style={{ color: '#E5F0F5' }}>
+            onlybreaths
           </span>
         </div>
 
@@ -220,31 +222,27 @@ export default function CourseLayout({ lessons, displayName, isAdmin }: Props) {
           `}
           style={{ background: 'var(--bg-md)', borderRight: '1px solid var(--border)', paddingTop: '3.5rem' }}
         >
-          {/* Logo hero */}
+          {/* Hero banner */}
           <div className="relative mx-4 mt-4 mb-2 rounded-xl overflow-hidden" style={{ height: '160px' }}>
             <Image
-              src={logoSrc}
-              alt="Course logo"
+              src="/hero-banner.png"
+              alt="onlybreaths"
               fill
-              className="object-cover logo-hero-fade"
+              className="object-cover object-center"
               sizes="272px"
             />
             <div
               className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(to top, rgba(0,0,0,.65) 0%, transparent 55%)',
-              }}
+              style={{ background: 'linear-gradient(to top, rgba(15,28,37,.85) 0%, rgba(15,28,37,.2) 60%, transparent 100%)' }}
             />
             <div className="absolute bottom-0 left-0 right-0 p-3">
-              <div className="flex gap-0.5 mb-1">
-                {[1,2,3,4,5].map((s) => (
-                  <svg key={s} width="10" height="10" viewBox="0 0 24 24" fill="#F5A623">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                ))}
-              </div>
-              <p className="text-xs font-semibold text-white leading-tight">Breathwork Mastery</p>
-              <p className="text-xs text-white/60">Complete Course · {lessons.length} lessons</p>
+              <p className="text-xs font-semibold text-white leading-tight tracking-wide">Breathwork Mastery</p>
+              <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '0.08em' }}>
+                BREATHE · MOVE · LIVE
+              </p>
+              <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                {lessons.length} lessons
+              </p>
             </div>
           </div>
 

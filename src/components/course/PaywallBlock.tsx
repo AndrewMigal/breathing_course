@@ -19,7 +19,7 @@ export default function PaywallBlock({ userEmail }: { userEmail: string }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const logoSrc = theme === 'dark' ? '/logo-dark.jpg' : '/logo-light.jpg'
+  const logoSrc = '/logo.png'
 
   async function handleSignOut() {
     await signOut()
@@ -47,9 +47,11 @@ export default function PaywallBlock({ userEmail }: { userEmail: string }) {
         className="flex items-center gap-3 px-5 h-13 flex-shrink-0"
         style={{ background: 'var(--hdr)', borderBottom: '1px solid var(--hdr-2)' }}
       >
-        <Image src={logoSrc} alt="Logo" width={26} height={26} className="rounded-full object-cover" />
-        <span className="font-semibold text-sm flex-1" style={{ color: '#F0E8D6' }}>
-          Inhale Exhale Co.
+        <div className="w-7 h-7 rounded-full bg-white flex-shrink-0 flex items-center justify-center overflow-hidden">
+          <Image src={logoSrc} alt="onlybreaths" width={26} height={26} className="object-contain" />
+        </div>
+        <span className="font-semibold text-sm flex-1 tracking-wide" style={{ color: '#E5F0F5' }}>
+          onlybreaths
         </span>
         <span className="text-xs hidden sm:block" style={{ color: 'var(--text-3)' }}>
           {userEmail}
@@ -87,30 +89,24 @@ export default function PaywallBlock({ userEmail }: { userEmail: string }) {
           className="rounded-3xl overflow-hidden shadow-2xl mb-6"
           style={{ border: '1px solid var(--border)' }}
         >
-          {/* Logo banner */}
-          <div className="relative h-48" style={{ background: 'var(--bg-dk)' }}>
+          {/* Hero banner */}
+          <div className="relative h-48">
             <Image
-              src={logoSrc}
-              alt="Breathwork Mastery"
+              src="/hero-banner.png"
+              alt="onlybreaths"
               fill
-              className="object-cover"
+              className="object-cover object-center"
               sizes="512px"
             />
             <div
               className="absolute inset-0"
-              style={{ background: 'linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 50%)' }}
+              style={{ background: 'linear-gradient(to top, rgba(15,28,37,.85) 0%, rgba(15,28,37,.2) 60%, transparent 100%)' }}
             />
             <div className="absolute bottom-0 left-0 right-0 p-5">
-              <div className="flex gap-0.5 mb-1.5">
-                {[1,2,3,4,5].map((s) => (
-                  <svg key={s} width="12" height="12" viewBox="0 0 24 24" fill="#F5A623">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                ))}
-                <span className="text-xs text-white/70 ml-1">5.0</span>
-              </div>
               <h1 className="text-2xl font-bold text-white">Breathwork Mastery</h1>
-              <p className="text-sm text-white/70">Inhale Exhale Co.</p>
+              <p className="text-sm mt-0.5 tracking-widest font-light" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                BREATHE · MOVE · LIVE
+              </p>
             </div>
           </div>
 

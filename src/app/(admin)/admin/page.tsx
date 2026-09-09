@@ -67,12 +67,12 @@ export default async function AdminPage() {
         className="sticky top-0 z-10 flex items-center gap-4 px-6 h-14"
         style={{ background: 'var(--hdr)', borderBottom: '1px solid var(--hdr-2)' }}
       >
-        <span className="font-semibold text-sm" style={{ color: '#F0E8D6' }}>
-          Admin Panel
+        <span className="font-semibold text-sm tracking-wide" style={{ color: '#E5F0F5' }}>
+          onlybreaths
         </span>
         <span style={{ color: 'var(--text-3)' }}>·</span>
         <span className="text-sm" style={{ color: 'var(--text-3)' }}>
-          Inhale Exhale Co.
+          Admin Panel
         </span>
         <div className="flex-1" />
         <Link
