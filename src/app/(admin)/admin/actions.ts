@@ -12,7 +12,7 @@ async function verifyAdmin() {
 
   const { data: profile } = await supabase
     .from('profiles').select('role').eq('id', user.id).single()
-  if (profile?.role !== 'admin') throw new Error('Forbidden')
+  if ((profile as { role: string } | null)?.role !== 'admin') throw new Error('Forbidden')
 
   return user
 }
