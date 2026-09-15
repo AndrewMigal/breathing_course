@@ -31,6 +31,7 @@ export interface Database {
           role?: 'student' | 'admin'
           created_at?: string
         }
+        Relationships: []
       }
       lessons: {
         Row: {
@@ -66,6 +67,7 @@ export interface Database {
           objectives?: string[]
           created_at?: string
         }
+        Relationships: []
       }
       user_progress: {
         Row: {
@@ -86,6 +88,7 @@ export interface Database {
           is_completed?: boolean
           completed_at?: string | null
         }
+        Relationships: []
       }
       courses: {
         Row: {
@@ -109,6 +112,7 @@ export interface Database {
           price?: number
           created_at?: string
         }
+        Relationships: []
       }
       purchases: {
         Row: {
@@ -132,6 +136,7 @@ export interface Database {
           status?: 'active' | 'pending' | 'refunded'
           created_at?: string
         }
+        Relationships: []
       }
     }
     Views: Record<string, never>
