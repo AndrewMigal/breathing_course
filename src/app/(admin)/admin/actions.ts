@@ -17,6 +17,14 @@ async function verifyAdmin() {
   return user
 }
 
+export async function changePassword(userId: string, newPassword: string) {
+  await verifyAdmin()
+  const admin = createAdminClient()
+
+  const { error } = await admin.auth.admin.updateUserById(userId, { password: newPassword })
+  if (error) throw new Error(error.message)
+}
+
 export async function deleteUser(userId: string) {
   await verifyAdmin()
   const admin = createAdminClient()

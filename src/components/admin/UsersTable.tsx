@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { grantAccess, revokeAccess, deleteUser } from '@/app/(admin)/admin/actions'
+import { grantAccess, revokeAccess, deleteUser, changePassword } from '@/app/(admin)/admin/actions'
 
 export type UserRow = {
   id: string
@@ -21,6 +21,11 @@ export default function UsersTable({ users }: { users: UserRow[] }) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [rows, setRows] = useState(users)
 
+  const [changePwdId, setChangePwdId] = useState<string | null>(null)
+  const [newPwd, setNewPwd] = useState('')
+  const [pwdPending, setPwdPending] = useState<string | null>(null)
+  const [pwdError, setPwdError] = useState<string | null>(null)
+
   async function toggle(userId: string, currentAccess: boolean) {
     setPending((p) => ({ ...p, [userId]: true }))
     setAccessMap((m) => ({ ...m, [userId]: !currentAccess }))
@@ -31,7 +36,6 @@ export default function UsersTable({ users }: { users: UserRow[] }) {
         await grantAccess(userId)
       }
     } catch {
-      // rollback
       setAccessMap((m) => ({ ...m, [userId]: currentAccess }))
     } finally {
       setPending((p) => ({ ...p, [userId]: false }))
@@ -48,6 +52,21 @@ export default function UsersTable({ users }: { users: UserRow[] }) {
       // keep the row on error
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  async function handleChangePassword(userId: string) {
+    if (!newPwd.trim()) return
+    setPwdPending(userId)
+    setPwdError(null)
+    try {
+      await changePassword(userId, newPwd)
+      setChangePwdId(null)
+      setNewPwd('')
+    } catch (err: unknown) {
+      setPwdError(err instanceof Error ? err.message : 'Error')
+    } finally {
+      setPwdPending(null)
     }
   }
 
@@ -79,6 +98,7 @@ export default function UsersTable({ users }: { users: UserRow[] }) {
           {rows.map((user) => {
             const hasAccess = accessMap[user.id] ?? user.has_access
             const isPending = pending[user.id]
+            const isChangingPwd = changePwdId === user.id
             return (
               <tr
                 key={user.id}
@@ -144,41 +164,94 @@ export default function UsersTable({ users }: { users: UserRow[] }) {
                   )}
                 </td>
 
-                {/* Delete */}
+                {/* Actions: change password + delete */}
                 <td className="px-4 py-3">
-                  {confirmDeleteId === user.id ? (
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => handleDelete(user.id)}
-                        disabled={deletingId === user.id}
-                        className="px-2.5 py-1 rounded-lg text-xs font-medium disabled:opacity-50"
-                        style={{ background: 'rgba(220,50,50,.15)', color: '#e05555' }}
-                      >
-                        {deletingId === user.id ? '...' : 'Delete'}
-                      </button>
-                      <button
-                        onClick={() => setConfirmDeleteId(null)}
-                        className="px-2.5 py-1 rounded-lg text-xs"
-                        style={{ color: 'var(--text-3)' }}
-                      >
-                        Cancel
-                      </button>
+                  {isChangingPwd ? (
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="password"
+                          value={newPwd}
+                          onChange={(e) => setNewPwd(e.target.value)}
+                          placeholder="New password"
+                          className="px-2 py-1 rounded-lg text-xs outline-none w-32"
+                          style={{
+                            background: 'var(--bg)',
+                            border: '1px solid var(--border)',
+                            color: 'var(--text)',
+                          }}
+                        />
+                        <button
+                          onClick={() => handleChangePassword(user.id)}
+                          disabled={pwdPending === user.id}
+                          className="px-2.5 py-1 rounded-lg text-xs font-medium disabled:opacity-50"
+                          style={{ background: 'var(--sky-t)', color: 'var(--sky-d)' }}
+                        >
+                          {pwdPending === user.id ? '...' : 'Save'}
+                        </button>
+                        <button
+                          onClick={() => { setChangePwdId(null); setNewPwd(''); setPwdError(null) }}
+                          className="px-2.5 py-1 rounded-lg text-xs"
+                          style={{ color: 'var(--text-3)' }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                      {pwdError && (
+                        <p className="text-xs" style={{ color: '#e05555' }}>{pwdError}</p>
+                      )}
                     </div>
                   ) : (
-                    <button
-                      onClick={() => setConfirmDeleteId(user.id)}
-                      disabled={deletingId === user.id}
-                      className="p-1.5 rounded-lg transition-colors disabled:opacity-40"
-                      style={{ color: 'var(--text-3)' }}
-                      aria-label="Delete user"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="3 6 5 6 21 6"/>
-                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                        <path d="M10 11v6M14 11v6"/>
-                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                      </svg>
-                    </button>
+                    <div className="flex items-center gap-1">
+                      {/* Change password */}
+                      <button
+                        onClick={() => { setChangePwdId(user.id); setNewPwd(''); setPwdError(null); setConfirmDeleteId(null) }}
+                        className="p-1.5 rounded-lg transition-colors"
+                        style={{ color: 'var(--text-3)' }}
+                        aria-label="Change password"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                      </button>
+
+                      {/* Delete */}
+                      {confirmDeleteId === user.id ? (
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleDelete(user.id)}
+                            disabled={deletingId === user.id}
+                            className="px-2.5 py-1 rounded-lg text-xs font-medium disabled:opacity-50"
+                            style={{ background: 'rgba(220,50,50,.15)', color: '#e05555' }}
+                          >
+                            {deletingId === user.id ? '...' : 'Delete'}
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            className="px-2.5 py-1 rounded-lg text-xs"
+                            style={{ color: 'var(--text-3)' }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => { setConfirmDeleteId(user.id); setChangePwdId(null) }}
+                          disabled={deletingId === user.id}
+                          className="p-1.5 rounded-lg transition-colors disabled:opacity-40"
+                          style={{ color: 'var(--text-3)' }}
+                          aria-label="Delete user"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <path d="M10 11v6M14 11v6"/>
+                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   )}
                 </td>
               </tr>
